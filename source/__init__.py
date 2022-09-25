@@ -2,4 +2,4 @@ from flask import Flask
 
 app =Flask(__name__)
 
-from source import views
+from source import main

@@ -1,16 +1,19 @@
-
-from source.db import mysql
+import pymysql
+from source.database import mysql
 from flask import jsonify
 from flask_restful import Resource,Api, reqparse
 from source import app 
 
 api = Api(app)
 
+
+
 class userTable(Resource):
     def get(self):
         try:
-            con =mysql.connect()
-            cursor=con.cursor()
+            
+            con=mysql.connect()
+            cursor=con.cursor(pymysql.cursors.DictCursor)
             query="select id,name,age from user"
             cursor.execute(query)
             user=cursor.fetchall()
