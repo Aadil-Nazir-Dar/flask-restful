@@ -1,8 +1,8 @@
-import pymysql
 from source.database import mysql
 from flask import jsonify
 from flask_restful import Resource,Api, reqparse
 from source import app 
+import pymysql
 
 api = Api(app)
 
@@ -11,18 +11,20 @@ api = Api(app)
 class userTable(Resource):
     def get(self):
         try:
-            
             con=mysql.connect()
-            cursor=con.cursor(pymysql.cursors.DictCursor)
-            query="select id,name,age from user"
-            cursor.execute(query)
-            user=cursor.fetchall()
-            return jsonify(user)
+            cur=con.cursor(pymysql.cursors.DictCursor)
+            cur.execute("SELECT id,name,age FROM user")
+            data=cur.fetchall()
+            return {"users":data}
+            # return jsonify(data) 
         except Exception as e:
-            print (e)
+            print(e)
         finally:
-            cursor.close()
+            cur.close()
             con.close()
+        
+     
+   
             
     def post(self):
         try:
@@ -63,7 +65,7 @@ class user(Resource):
     def get (self,id):
         try:
             con=mysql.connect()
-            Cursor=con.cursor()            
+            Cursor=con.cursor(pymysql.cursors.DictCursor)            
             Cursor.execute("select id, name, age from user where id=%s",id)
             user = Cursor.fetchall()              
         except Exception as e:
@@ -189,5 +191,4 @@ class carList(Resource):
 api.add_resource(userTable, '/users',endpoint ='users')
 api.add_resource(carList,'/cars',endpoint='cars')
 api.add_resource(user, '/user/<int:id>', endpoint='user')
-# api.add_resource(cars, '/user/<int:id>', endpoint='cars')
 
